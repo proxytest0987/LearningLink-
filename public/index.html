@@ -3,24 +3,112 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Private Proxy</title>
+  <title>Proxy Browser</title>
+  <meta name="color-scheme" content="light dark" />
   <style>
-    body { font-family: system-ui, -apple-system, sans-serif; margin: 40px; }
-    input[type="text"] { width: 100%; max-width: 720px; padding: 12px; font-size: 16px; }
-    button { padding: 12px 16px; font-size: 16px; margin-left: 8px; }
-    .hint { color: #666; margin-top: 12px; }
-    .box { display:flex; gap:8px; align-items:center; }
+    :root{
+      --bg:#0f1020; --fg:#101418; --text:#1a1f2b; --muted:#6b7280; --brand:#6d5efc; --brand2:#17c6eb; --glass:rgba(255,255,255,.08);
+    }
+    @media (prefers-color-scheme: light){
+      :root{ --bg:#f6f7fb; --fg:#ffffff; --text:#0f172a; --muted:#64748b; --glass:rgba(255,255,255,.6); }
+    }
+    *{ box-sizing:border-box }
+    html,body{ height:100% }
+    body{
+      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic UI", "Yu Gothic", Meiryo, sans-serif;
+      color:var(--text); display:grid; place-items:center; background: radial-gradient(1200px 800px at 10% 10%, #1b1740 0%, transparent 60%),
+                               radial-gradient(1000px 700px at 90% 30%, #07253d 0%, transparent 60%),
+                               linear-gradient(120deg, #0d0f1a, #0b0e17);
+      min-height:100%;
+    }
+    @media (prefers-color-scheme: light){
+      body{ background:
+        radial-gradient(1200px 800px at 10% 10%, #e8f0ff 0%, transparent 60%),
+        radial-gradient(1000px 700px at 90% 30%, #e6fff7 0%, transparent 60%),
+        linear-gradient(120deg, #eef2ff, #f6f7fb); }
+    }
+    .card{
+      width:min(880px, 94vw);
+      backdrop-filter: blur(16px) saturate(120%);
+      background: var(--glass);
+      border:1px solid rgba(255,255,255,.18);
+      border-radius: 20px;
+      padding: 32px 28px 26px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.20);
+    }
+    h1{
+      margin:0 0 8px; font-size: clamp(28px, 4vw, 44px);
+      letter-spacing:.3px; line-height:1.15;
+      background: linear-gradient(90deg, var(--brand), var(--brand2));
+      -webkit-background-clip: text; background-clip:text; color: transparent;
+      font-weight: 800;
+    }
+    .subtitle{ color:var(--muted); margin:0 0 18px; font-size: clamp(14px, 2.2vw, 16px) }
+    .badge{
+      display:inline-flex; gap:8px; align-items:center;
+      padding:6px 10px; border-radius:999px; font-size:12px; font-weight:700;
+      background: linear-gradient(90deg, rgba(109,94,252,.18), rgba(23,198,235,.18));
+      color:#334155; border:1px solid rgba(255,255,255,.2);
+    }
+    @media (prefers-color-scheme: dark){
+      .badge{ color:#e5e7eb }
+    }
+    form{
+      display:flex; gap:10px; margin:16px 0 12px; flex-wrap:wrap
+    }
+    input[type="text"]{
+      flex:1 1 520px; min-width: 220px;
+      padding:14px 16px; font-size:16px; border-radius:12px; border:1px solid rgba(0,0,0,.08);
+      outline:none; background: rgba(255,255,255,.85);
+    }
+    @media (prefers-color-scheme: dark){
+      input[type="text"]{ background: rgba(17,20,28,.6); color:#e5e7eb; border:1px solid rgba(255,255,255,.12)}
+    }
+    button{
+      flex: 0 0 auto;
+      padding:14px 18px; font-size:16px; border-radius:12px; border:none; cursor:pointer; font-weight:700;
+      background: linear-gradient(90deg, var(--brand), var(--brand2)); color:white;
+      box-shadow: 0 8px 22px rgba(23,198,235,.25);
+    }
+    .hint{ color:var(--muted); font-size:13px; margin-top:6px }
+    .chips{ display:flex; flex-wrap:wrap; gap:10px; margin-top:18px }
+    .chip{
+      padding:8px 12px; border-radius:999px; font-size:13px; cursor:pointer; user-select:none;
+      background: rgba(255,255,255,.6); border:1px solid rgba(0,0,0,.06)
+    }
+    @media (prefers-color-scheme: dark){
+      .chip{ background: rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.16); color:#e5e7eb }
+    }
+    footer{ margin-top: 18px; font-size: 12px; color: var(--muted); display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap }
+    a.quick{ text-decoration:none; color:inherit }
   </style>
 </head>
 <body>
-  <h1>Proxy Browser</h1>
-  <form class="box" action="/go" method="post">
-    <input type="text" name="q" placeholder="URL または 検索語を入力 (例: https://example.com, あるいは 「琵琶湖 観光」)" />
-    <button type="submit">開く/検索</button>
-  </form>
-  <p class="hint">
-    例: YouTube, Wikipedia, ニュースサイトなど。検索は必ずプロキシ経由で行われ、結果のクリックもプロキシ配下に留まります。<br/>
-    注意: DRM保護や一部のログイン(特にOAuth)は動かない場合があります。
-  </p>
+  <main class="card">
+    <div class="badge">🎉 하루키が作成したぞ！！</div>
+    <h1>Proxy Browser</h1>
+    <p class="subtitle">検索エンジンも動画も、常にプロキシ経由で。</p>
+
+    <form action="/go" method="post">
+      <input type="text" name="q" placeholder="URL または 検索語を入力 (例: https://example.com もしくは “琵琶湖 観光”)" autofocus />
+      <button type="submit">開く / 検索</button>
+    </form>
+
+    <p class="hint">ヒント: クリック後の遷移も /proxy/ 配下に留まります。DRM保護や一部のログインは動作しない場合があります。</p>
+
+    <div class="chips">
+      <a class="quick chip" href="/proxy/https://www.google.com">Google</a>
+      <a class="quick chip" href="/proxy/https://ja.wikipedia.org">Wikipedia</a>
+      <a class="quick chip" href="/proxy/https://www.youtube.com">YouTube</a>
+      <a class="quick chip" href="/proxy/https://news.yahoo.co.jp">Yahoo!ニュース</a>
+      <a class="quick chip" href="/proxy/https://www.bbc.com">BBC</a>
+      <a class="quick chip" href="/proxy/https://developer.mozilla.org/ja/">MDN</a>
+    </div>
+
+    <footer>
+      <span>© 2026 Proxy Browser</span>
+      <span>Made with ❤️ by 하루키</span>
+    </footer>
+  </main>
 </body>
 </html>
