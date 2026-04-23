@@ -3,141 +3,145 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Proxy Browser — 하루키が作成したぞ！！</title>
-  <meta name="theme-color" content="#101216" />
+  <title>Proxy Browser — 制作: 하루키</title>
+  <meta name="theme-color" content="#ff8bd1" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <style>
     :root{
-      --bg:#0e1116; --card:rgba(255,255,255,.06); --card-border:rgba(255,255,255,.12);
-      --text:#e9eef5; --muted:#a6b0bf; --accent:#6ae3ff; --accent2:#a78bfa; --ok:#22c55e;
-      --input:#141922; --btn:#1f2937; --btntext:#eaf2ff;
+      --bg1:#fff5fb; --bg2:#f0fbff;
+      --text:#161a20; --muted:#5c667a;
+      --card:#ffffff; --border:#e7ebf3;
+      --accent:#ff8bd1; --accent2:#7cc8ff; --accent3:#ffd36e;
+      --input:#ffffff; --shadow: 0 10px 30px rgba(40,56,100,.12);
     }
-    @media (prefers-color-scheme: light){
-      :root{ --bg:#f6f7fb; --card:rgba(0,0,0,.05); --card-border:rgba(0,0,0,.08);
-             --text:#0b1220; --muted:#485166; --input:#fff; --btn:#0b1220; --btntext:#fff; }
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg1:#12151b; --bg2:#141a21;
+        --text:#e9eef5; --muted:#a5afc2;
+        --card:#171b23; --border:#242b36;
+        --input:#151a22; --shadow: 0 10px 30px rgba(0,0,0,.35);
+      }
     }
-    *{ box-sizing: border-box }
+    *{ box-sizing:border-box }
     html,body{ height:100% }
     body{
-      margin:0; font-family: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-      color:var(--text); background: radial-gradient(1200px 800px at 10% -10%, #1f2a44 0%, transparent 60%),
-                          radial-gradient(1000px 700px at 110% 10%, #2a1f44 0%, transparent 55%),
-                          var(--bg);
+      margin:0; font-family: ui-sans-serif, -apple-system, system-ui, Segoe UI, Roboto, Helvetica, Arial;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 800px at 10% -10%, rgba(255,139,209,.25), transparent 60%),
+        radial-gradient(1000px 700px at 110% 10%, rgba(124,200,255,.25), transparent 55%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
     }
-    .wrap{ min-height:100%; display:grid; grid-template-rows:auto 1fr auto }
-    header{ padding:28px 20px }
+    header{ padding:22px 16px }
     .brand{
-      display:flex; align-items:center; gap:14px; max-width:1080px; margin:0 auto;
+      max-width:960px; margin:0 auto; display:flex; align-items:center; gap:12px;
     }
     .logo{
-      width:44px; height:44px; border-radius:12px; background: conic-gradient(from 210deg, #6ae3ff, #a78bfa, #6ae3ff);
-      box-shadow: 0 8px 30px rgba(106,227,255,.35);
-      position:relative; overflow:hidden;
+      width:40px; height:40px; border-radius:12px;
+      background: conic-gradient(from 180deg, var(--accent), var(--accent2), var(--accent3), var(--accent));
+      box-shadow: 0 6px 18px rgba(255,139,209,.35);
     }
-    .logo::after{ content:""; position:absolute; inset:4px; border-radius:10px; background: var(--bg); mix-blend-mode:screen; opacity:.25 }
     .titles h1{ margin:0; font-size:20px; letter-spacing:.2px }
     .titles p{ margin:2px 0 0; color:var(--muted); font-size:13px }
-    main{ display:grid; place-items:center; padding:24px 16px }
+    main{ padding:16px }
+    .wrap{ max-width:960px; margin:0 auto }
     .card{
-      width:min(920px, 100%); background: var(--card); border:1px solid var(--card-border);
-      border-radius:18px; padding:28px; backdrop-filter: blur(8px);
-      box-shadow: 0 10px 40px rgba(0,0,0,.18);
+      background:var(--card); border:1px solid var(--border); border-radius:20px; padding:20px;
+      box-shadow: var(--shadow);
     }
-    .hero{
-      display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:18px;
-    }
-    .hero h2{ margin:0; font-size:24px; letter-spacing:.3px }
-    .madeby{ color:var(--muted); font-size:14px }
-    .madeby b{ color:var(--text) }
-    .form{
-      display:flex; gap:10px; width:100%; margin-top:8px;
-    }
+    .hero{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+    .heroLeft{ display:flex; align-items:center; gap:12px }
+    .emoji{ font-size:28px }
+    .hero h2{ margin:0; font-size:22px; letter-spacing:.2px }
+    .by{ color:var(--muted); font-size:14px }
+    .by b{ color:var(--text) }
+
+    .form{ margin-top:14px; display:flex; gap:10px; flex-wrap:wrap }
     input[type="text"]{
-      flex:1; padding:14px 16px; font-size:16px; color:var(--text);
-      background: var(--input); border:1px solid var(--card-border); border-radius:12px;
-      outline:none; transition: box-shadow .15s ease, border-color .15s ease;
+      flex:1; min-width:260px; padding:14px 16px; font-size:16px; color:var(--text);
+      background:var(--input); border:1px solid var(--border); border-radius:14px; outline:none;
+      transition: box-shadow .15s ease, border-color .15s ease;
     }
     input[type="text"]::placeholder{ color:var(--muted) }
-    input[type="text"]:focus{ border-color:#70d7ff; box-shadow:0 0 0 4px rgba(112,215,255,.15) }
+    input[type="text"]:focus{ border-color:var(--accent2); box-shadow:0 0 0 4px rgba(124,200,255,.2) }
     button{
-      padding:14px 18px; font-size:16px; border-radius:12px; border:1px solid rgba(255,255,255,.08);
-      background: linear-gradient(180deg, #2c3647 0%, #1f2937 100%); color:var(--btntext); cursor:pointer;
-      transition: transform .05s ease, box-shadow .15s ease;
+      padding:14px 18px; font-size:16px; border-radius:14px; border:0; cursor:pointer;
+      background: linear-gradient(180deg, var(--accent) 0%, #ff6fbf 100%); color:#fff;
+      box-shadow: 0 8px 18px rgba(255,139,209,.35); transition: transform .05s ease, box-shadow .15s ease;
     }
-    button:hover{ box-shadow:0 8px 20px rgba(32, 118, 255, .25) }
+    button:hover{ box-shadow:0 10px 22px rgba(255,139,209,.5) }
     button:active{ transform: translateY(1px) }
-    .chips{ display:flex; gap:8px; flex-wrap:wrap; margin-top:14px }
+
+    .chips{ display:flex; gap:10px; flex-wrap:wrap; margin-top:14px }
     .chip{
-      padding:8px 12px; border-radius:999px; border:1px solid var(--card-border);
-      background: rgba(255,255,255,.06); color:var(--text); font-size:13px; cursor:pointer;
+      padding:9px 12px; border-radius:999px; border:1px dashed var(--border);
+      background: #fff7; backdrop-filter: blur(6px);
+      color:var(--text); font-size:13px; cursor:pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,.06);
     }
-    .hint{ margin-top:14px; color:var(--muted); font-size:13px; line-height:1.5 }
-    footer{ padding:22px; text-align:center; color:var(--muted); font-size:12px }
-    .ok{ color: var(--ok) }
+    @media (prefers-color-scheme: dark){
+      .chip{ background:#1c2330 }
+    }
+
+    .hint{ margin-top:14px; color:var(--muted); font-size:13px; line-height:1.6 }
+    footer{ text-align:center; color:var(--muted); font-size:12px; padding:22px }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <div class="brand">
-        <div class="logo" aria-hidden="true"></div>
-        <div class="titles">
-          <h1>Proxy Browser</h1>
-          <p>検索もリンク遷移も、常にプロキシ経由で。</p>
-        </div>
+  <header>
+    <div class="brand">
+      <div class="logo" aria-hidden="true"></div>
+      <div class="titles">
+        <h1>Proxy Browser</h1>
+        <p>検索もリンクも、ずっとプロキシ経由で。</p>
       </div>
-    </header>
+    </div>
+  </header>
 
-    <main>
+  <main>
+    <div class="wrap">
       <section class="card">
         <div class="hero">
-          <h2>ようこそ。<span class="ok">安全に</span>、そしてスマートに。</h2>
-          <div class="madeby">制作: <b>하루키が作成したぞ！！</b></div>
+          <div class="heroLeft">
+            <div class="emoji">🫧</div>
+            <h2>やさしく・シンプルに・スイスイ。</h2>
+          </div>
+          <div class="by">制作: <b>하루키</b></div>
         </div>
 
         <form class="form" action="/go" method="post" onsubmit="return handleSubmit(event)">
           <input id="q" type="text" name="q" autocomplete="on"
-                 placeholder="URL または 検索語を入力（例: https://example.com / 琵琶湖 観光 / 動画 テスト）" />
-          <button type="submit">開く / 検索</button>
+                 placeholder="URL または 検索語（例: https://example.com / 琵琶湖 観光 / 動画 テスト）" />
+          <button type="submit">いってみる</button>
         </form>
 
         <div class="chips">
-          <div class="chip" onclick="quick('https://ja.wikipedia.org')">Wikipedia</div>
-          <div class="chip" onclick="quick('https://news.yahoo.co.jp')">ニュース</div>
-          <div class="chip" onclick="quick('動画 テスト')">動画 テスト</div>
-          <div class="chip" onclick="quick('https://developer.mozilla.org')">MDN</div>
+          <div class="chip" onclick="quick('https://ja.wikipedia.org')">📚 Wikipedia</div>
+          <div class="chip" onclick="quick('ニュース')">🗞 ニュース</div>
+          <div class="chip" onclick="quick('動画 テスト')">🎬 動画テスト</div>
+          <div class="chip" onclick="quick('https://developer.mozilla.org')">🛠 MDN</div>
         </div>
 
         <p class="hint">
-          メモ: DRM保護の動画（例: 一部の配信サービス）や厳格なログイン/ボット対策サイトでは動作しない場合があります。<br/>
-          通常のWebサイト、画像/MP4/HLS再生、検索エンジンを含む多くのケースはこのままでOKです。
+          メモ: 一部のサービス（DRM保護や厳格なボット対策サイト、ログインが必須のサイトなど）は動作しない場合があります。<br/>
+          ふつうのWebサイト・画像・MP4/HLS動画・検索は、このまま使えます。
         </p>
       </section>
-    </main>
+    </div>
+  </main>
 
-    <footer>
-      © <span id="year"></span> Haruki Lab. All rights reserved.
-    </footer>
-  </div>
+  <footer>
+    © <span id="year"></span> Haruki. All rights reserved.
+  </footer>
 
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
-
-    function quick(text){
-      const el = document.getElementById('q');
-      el.value = text;
-      el.focus();
-    }
-
+    function quick(text){ const el = document.getElementById('q'); el.value = text; el.focus(); }
     function handleSubmit(e){
-      const el = document.getElementById('q');
-      const v = (el.value || '').trim();
+      const el = document.getElementById('q'); const v = (el.value || '').trim();
       if(!v){ el.focus(); return false; }
-      // URLっぽい場合に https:// を補完（http/https無しでドメインだけ入れたとき用）
       const looksLikeUrl = /^\w+:\/\//i.test(v) || (v.includes('.') && !v.includes(' '));
-      if(looksLikeUrl && !/^\w+:\/\//i.test(v)){
-        el.value = 'https://' + v;
-      }
+      if(looksLikeUrl && !/^\w+:\/\//i.test(v)){ el.value = 'https://' + v; }
       return true;
     }
   </script>
