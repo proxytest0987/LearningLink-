@@ -1,4 +1,4 @@
-// server.js（安定化パッチ入り）
+// server.js（安定化パッチ v2）
 const express = require('express');
 const compression = require('compression');
 const morgan = require('morgan');
@@ -18,7 +18,7 @@ app.use(morgan('tiny'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// ---- 安定化: アウトバウンドのHTTP/HTTPSエージェント（Keep-Alive） ----
+// ---- アウトバウンドHTTP/HTTPS: Keep-Alive有効化 ----
 const httpAgent = new http.Agent({
   keepAlive: true,
   keepAliveMsecs: 10_000,
@@ -41,35 +41,59 @@ const config = {
   ],
   standardMiddleware: true,
 
-  // 上流に出す直前の調整（ヘッダ・エージェント・タイムアウトなど）
+  // 上流へ出す直前の調整（ガード付き）
   requestMiddleware: [
     (data) => {
-      // UA/言語/エンコーディングを“普通のブラウザ相当”に統一
-      const h = data.requestOptions.headers || (data.requestOptions.headers = {});
-      h['user-agent'] = h['user-agent'] || 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36';
-      h['accept-language'] = h['accept-language'] || 'ja-JP,ja;q=0.9,en-US;q=0.7,en;q=0.6';
-      // 一部環境でbrが相性悪いケースがあるため、まずはgzip/deflate優先
-      h['accept-encoding'] = 'gzip, deflate';
-      h['connection'] = 'keep-alive';
-      // Keep-Aliveエージェントを適用
-      data.requestOptions.agent = (data.protocol === 'http:') ? httpAgent : httpsAgent;
-      // ソケット/応答タイムアウト（過度なハング防止）
-      data.requestOptions.timeout = 30_000; // ms
+      try {
+        if (!data || !data.requestOptions) return; // ガード
+        const ro = data.requestOptions;
+
+        // ヘッダを必ずオブジェクト化
+        ro.headers = ro.headers || {};
+        const h = ro.headers;
+
+        // ブラウザらしいUA/言語/圧縮
+        if (!h['user-agent']) {
+          h['user-agent'] =
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36';
+        }
+        if (!h['accept-language']) {
+          h['accept-language'] = 'ja-JP,ja;q=0.9,en-US;q=0.7,en;q=0.6';
+        }
+        // 一部環境でbrが不安定な場合があるためまずはgzip/deflate
+        h['accept-encoding'] = 'gzip, deflate';
+        h['connection'] = 'keep-alive';
+
+        // プロトコル判定（無ければhttps扱い）
+        const isHttp =
+          ro.protocol === 'http:' ||
+          (data && data.protocol === 'http:');
+
+        // Keep-Aliveエージェント適用
+        ro.agent = isHttp ? httpAgent : httpsAgent;
+
+        // 過度なハングを防ぐタイムアウト
+        if (!ro.timeout) ro.timeout = 30_000;
+      } catch (e) {
+        console.error('requestMiddleware error:', e && (e.code || e.message));
+      }
     }
   ],
 
-  // レスポンス側の最終調整
+  // レスポンス側の調整（CSP/Frame制限の緩和、動画シーク安定化）
   responseMiddleware: [
     (data) => {
-      if (data.headers) {
-        // 一部サイトの描画/埋め込み安定化
-        delete data.headers['content-security-policy'];
-        delete data.headers['x-frame-options'];
-      }
-      // 動画シークの安定化
-      if (data.clientRequest && data.clientRequest.headers) {
-        const range = data.clientRequest.headers['range'];
-        if (range) data.headers['accept-ranges'] = 'bytes';
+      try {
+        if (data && data.headers) {
+          delete data.headers['content-security-policy'];
+          delete data.headers['x-frame-options'];
+        }
+        if (data && data.clientRequest && data.clientRequest.headers) {
+          const range = data.clientRequest.headers['range'];
+          if (range && data.headers) data.headers['accept-ranges'] = 'bytes';
+        }
+      } catch (e) {
+        console.error('responseMiddleware error:', e && (e.code || e.message));
       }
     }
   ]
@@ -82,7 +106,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// 入力ハンドラ: URL or 検索語 → 常に /proxy/ 経由へ
+// 入力ハンドラ: URL か 検索語 → 常に /proxy/ へ
 app.post('/go', (req, res) => {
   const input = (req.body.q || '').trim();
   if (!input) return res.redirect('/');
@@ -98,7 +122,7 @@ app.post('/go', (req, res) => {
 // 健康チェック
 app.get('/healthz', (_req, res) => res.status(200).send('ok'));
 
-// ---- エラーハンドラ（ECONNRESET等の可視化と優しい表示） ----
+// ---- エラーハンドラ（ECONNRESET等をキャッチしやすく） ----
 app.use((err, req, res, next) => {
   console.error('proxy-error:', err && (err.code || err.message), err && err.stack ? `\n${err.stack}` : '');
   if (res.headersSent) return next(err);
@@ -129,6 +153,6 @@ server.keepAliveTimeout = 61_000;
 server.headersTimeout   = 62_000;
 server.requestTimeout   = 60_000;
 
-// 予期せぬ例外もログして落ちにくく
+// 予期せぬ例外もログ
 process.on('uncaughtException', (e) => console.error('uncaughtException', e));
 process.on('unhandledRejection', (e) => console.error('unhandledRejection', e));
