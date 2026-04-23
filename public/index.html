@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Private Proxy</title>
+  <style>
+    body { font-family: system-ui, -apple-system, sans-serif; margin: 40px; }
+    input[type="text"] { width: 100%; max-width: 720px; padding: 12px; font-size: 16px; }
+    button { padding: 12px 16px; font-size: 16px; margin-left: 8px; }
+    .hint { color: #666; margin-top: 12px; }
+    .box { display:flex; gap:8px; align-items:center; }
+  </style>
+</head>
+<body>
+  <h1>Proxy Browser</h1>
+  <form class="box" action="/go" method="post">
+    <input type="text" name="q" placeholder="URL または 検索語を入力 (例: https://example.com, あるいは 「琵琶湖 観光」)" />
+    <button type="submit">開く/検索</button>
+  </form>
+  <p class="hint">
+    例: YouTube, Wikipedia, ニュースサイトなど。検索は必ずプロキシ経由で行われ、結果のクリックもプロキシ配下に留まります。<br/>
+    注意: DRM保護や一部のログイン(特にOAuth)は動かない場合があります。
+  </p>
+</body>
+</html>
