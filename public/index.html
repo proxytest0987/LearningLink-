@@ -3,112 +3,143 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Proxy Browser</title>
-  <meta name="color-scheme" content="light dark" />
+  <title>Proxy Browser — 하루키が作成したぞ！！</title>
+  <meta name="theme-color" content="#101216" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <style>
     :root{
-      --bg:#0f1020; --fg:#101418; --text:#1a1f2b; --muted:#6b7280; --brand:#6d5efc; --brand2:#17c6eb; --glass:rgba(255,255,255,.08);
+      --bg:#0e1116; --card:rgba(255,255,255,.06); --card-border:rgba(255,255,255,.12);
+      --text:#e9eef5; --muted:#a6b0bf; --accent:#6ae3ff; --accent2:#a78bfa; --ok:#22c55e;
+      --input:#141922; --btn:#1f2937; --btntext:#eaf2ff;
     }
     @media (prefers-color-scheme: light){
-      :root{ --bg:#f6f7fb; --fg:#ffffff; --text:#0f172a; --muted:#64748b; --glass:rgba(255,255,255,.6); }
+      :root{ --bg:#f6f7fb; --card:rgba(0,0,0,.05); --card-border:rgba(0,0,0,.08);
+             --text:#0b1220; --muted:#485166; --input:#fff; --btn:#0b1220; --btntext:#fff; }
     }
-    *{ box-sizing:border-box }
+    *{ box-sizing: border-box }
     html,body{ height:100% }
     body{
-      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic UI", "Yu Gothic", Meiryo, sans-serif;
-      color:var(--text); display:grid; place-items:center; background: radial-gradient(1200px 800px at 10% 10%, #1b1740 0%, transparent 60%),
-                               radial-gradient(1000px 700px at 90% 30%, #07253d 0%, transparent 60%),
-                               linear-gradient(120deg, #0d0f1a, #0b0e17);
-      min-height:100%;
+      margin:0; font-family: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      color:var(--text); background: radial-gradient(1200px 800px at 10% -10%, #1f2a44 0%, transparent 60%),
+                          radial-gradient(1000px 700px at 110% 10%, #2a1f44 0%, transparent 55%),
+                          var(--bg);
     }
-    @media (prefers-color-scheme: light){
-      body{ background:
-        radial-gradient(1200px 800px at 10% 10%, #e8f0ff 0%, transparent 60%),
-        radial-gradient(1000px 700px at 90% 30%, #e6fff7 0%, transparent 60%),
-        linear-gradient(120deg, #eef2ff, #f6f7fb); }
+    .wrap{ min-height:100%; display:grid; grid-template-rows:auto 1fr auto }
+    header{ padding:28px 20px }
+    .brand{
+      display:flex; align-items:center; gap:14px; max-width:1080px; margin:0 auto;
     }
+    .logo{
+      width:44px; height:44px; border-radius:12px; background: conic-gradient(from 210deg, #6ae3ff, #a78bfa, #6ae3ff);
+      box-shadow: 0 8px 30px rgba(106,227,255,.35);
+      position:relative; overflow:hidden;
+    }
+    .logo::after{ content:""; position:absolute; inset:4px; border-radius:10px; background: var(--bg); mix-blend-mode:screen; opacity:.25 }
+    .titles h1{ margin:0; font-size:20px; letter-spacing:.2px }
+    .titles p{ margin:2px 0 0; color:var(--muted); font-size:13px }
+    main{ display:grid; place-items:center; padding:24px 16px }
     .card{
-      width:min(880px, 94vw);
-      backdrop-filter: blur(16px) saturate(120%);
-      background: var(--glass);
-      border:1px solid rgba(255,255,255,.18);
-      border-radius: 20px;
-      padding: 32px 28px 26px;
-      box-shadow: 0 20px 60px rgba(0,0,0,.20);
+      width:min(920px, 100%); background: var(--card); border:1px solid var(--card-border);
+      border-radius:18px; padding:28px; backdrop-filter: blur(8px);
+      box-shadow: 0 10px 40px rgba(0,0,0,.18);
     }
-    h1{
-      margin:0 0 8px; font-size: clamp(28px, 4vw, 44px);
-      letter-spacing:.3px; line-height:1.15;
-      background: linear-gradient(90deg, var(--brand), var(--brand2));
-      -webkit-background-clip: text; background-clip:text; color: transparent;
-      font-weight: 800;
+    .hero{
+      display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:18px;
     }
-    .subtitle{ color:var(--muted); margin:0 0 18px; font-size: clamp(14px, 2.2vw, 16px) }
-    .badge{
-      display:inline-flex; gap:8px; align-items:center;
-      padding:6px 10px; border-radius:999px; font-size:12px; font-weight:700;
-      background: linear-gradient(90deg, rgba(109,94,252,.18), rgba(23,198,235,.18));
-      color:#334155; border:1px solid rgba(255,255,255,.2);
-    }
-    @media (prefers-color-scheme: dark){
-      .badge{ color:#e5e7eb }
-    }
-    form{
-      display:flex; gap:10px; margin:16px 0 12px; flex-wrap:wrap
+    .hero h2{ margin:0; font-size:24px; letter-spacing:.3px }
+    .madeby{ color:var(--muted); font-size:14px }
+    .madeby b{ color:var(--text) }
+    .form{
+      display:flex; gap:10px; width:100%; margin-top:8px;
     }
     input[type="text"]{
-      flex:1 1 520px; min-width: 220px;
-      padding:14px 16px; font-size:16px; border-radius:12px; border:1px solid rgba(0,0,0,.08);
-      outline:none; background: rgba(255,255,255,.85);
+      flex:1; padding:14px 16px; font-size:16px; color:var(--text);
+      background: var(--input); border:1px solid var(--card-border); border-radius:12px;
+      outline:none; transition: box-shadow .15s ease, border-color .15s ease;
     }
-    @media (prefers-color-scheme: dark){
-      input[type="text"]{ background: rgba(17,20,28,.6); color:#e5e7eb; border:1px solid rgba(255,255,255,.12)}
-    }
+    input[type="text"]::placeholder{ color:var(--muted) }
+    input[type="text"]:focus{ border-color:#70d7ff; box-shadow:0 0 0 4px rgba(112,215,255,.15) }
     button{
-      flex: 0 0 auto;
-      padding:14px 18px; font-size:16px; border-radius:12px; border:none; cursor:pointer; font-weight:700;
-      background: linear-gradient(90deg, var(--brand), var(--brand2)); color:white;
-      box-shadow: 0 8px 22px rgba(23,198,235,.25);
+      padding:14px 18px; font-size:16px; border-radius:12px; border:1px solid rgba(255,255,255,.08);
+      background: linear-gradient(180deg, #2c3647 0%, #1f2937 100%); color:var(--btntext); cursor:pointer;
+      transition: transform .05s ease, box-shadow .15s ease;
     }
-    .hint{ color:var(--muted); font-size:13px; margin-top:6px }
-    .chips{ display:flex; flex-wrap:wrap; gap:10px; margin-top:18px }
+    button:hover{ box-shadow:0 8px 20px rgba(32, 118, 255, .25) }
+    button:active{ transform: translateY(1px) }
+    .chips{ display:flex; gap:8px; flex-wrap:wrap; margin-top:14px }
     .chip{
-      padding:8px 12px; border-radius:999px; font-size:13px; cursor:pointer; user-select:none;
-      background: rgba(255,255,255,.6); border:1px solid rgba(0,0,0,.06)
+      padding:8px 12px; border-radius:999px; border:1px solid var(--card-border);
+      background: rgba(255,255,255,.06); color:var(--text); font-size:13px; cursor:pointer;
     }
-    @media (prefers-color-scheme: dark){
-      .chip{ background: rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.16); color:#e5e7eb }
-    }
-    footer{ margin-top: 18px; font-size: 12px; color: var(--muted); display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap }
-    a.quick{ text-decoration:none; color:inherit }
+    .hint{ margin-top:14px; color:var(--muted); font-size:13px; line-height:1.5 }
+    footer{ padding:22px; text-align:center; color:var(--muted); font-size:12px }
+    .ok{ color: var(--ok) }
   </style>
 </head>
 <body>
-  <main class="card">
-    <div class="badge">🎉 하루키が作成したぞ！！</div>
-    <h1>Proxy Browser</h1>
-    <p class="subtitle">検索エンジンも動画も、常にプロキシ経由で。</p>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div class="titles">
+          <h1>Proxy Browser</h1>
+          <p>検索もリンク遷移も、常にプロキシ経由で。</p>
+        </div>
+      </div>
+    </header>
 
-    <form action="/go" method="post">
-      <input type="text" name="q" placeholder="URL または 検索語を入力 (例: https://example.com もしくは “琵琶湖 観光”)" autofocus />
-      <button type="submit">開く / 検索</button>
-    </form>
+    <main>
+      <section class="card">
+        <div class="hero">
+          <h2>ようこそ。<span class="ok">安全に</span>、そしてスマートに。</h2>
+          <div class="madeby">制作: <b>하루키が作成したぞ！！</b></div>
+        </div>
 
-    <p class="hint">ヒント: クリック後の遷移も /proxy/ 配下に留まります。DRM保護や一部のログインは動作しない場合があります。</p>
+        <form class="form" action="/go" method="post" onsubmit="return handleSubmit(event)">
+          <input id="q" type="text" name="q" autocomplete="on"
+                 placeholder="URL または 検索語を入力（例: https://example.com / 琵琶湖 観光 / 動画 テスト）" />
+          <button type="submit">開く / 検索</button>
+        </form>
 
-    <div class="chips">
-      <a class="quick chip" href="/proxy/https://www.google.com">Google</a>
-      <a class="quick chip" href="/proxy/https://ja.wikipedia.org">Wikipedia</a>
-      <a class="quick chip" href="/proxy/https://www.youtube.com">YouTube</a>
-      <a class="quick chip" href="/proxy/https://news.yahoo.co.jp">Yahoo!ニュース</a>
-      <a class="quick chip" href="/proxy/https://www.bbc.com">BBC</a>
-      <a class="quick chip" href="/proxy/https://developer.mozilla.org/ja/">MDN</a>
-    </div>
+        <div class="chips">
+          <div class="chip" onclick="quick('https://ja.wikipedia.org')">Wikipedia</div>
+          <div class="chip" onclick="quick('https://news.yahoo.co.jp')">ニュース</div>
+          <div class="chip" onclick="quick('動画 テスト')">動画 テスト</div>
+          <div class="chip" onclick="quick('https://developer.mozilla.org')">MDN</div>
+        </div>
+
+        <p class="hint">
+          メモ: DRM保護の動画（例: 一部の配信サービス）や厳格なログイン/ボット対策サイトでは動作しない場合があります。<br/>
+          通常のWebサイト、画像/MP4/HLS再生、検索エンジンを含む多くのケースはこのままでOKです。
+        </p>
+      </section>
+    </main>
 
     <footer>
-      <span>© 2026 Proxy Browser</span>
-      <span>Made with ❤️ by 하루키</span>
+      © <span id="year"></span> Haruki Lab. All rights reserved.
     </footer>
-  </main>
+  </div>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    function quick(text){
+      const el = document.getElementById('q');
+      el.value = text;
+      el.focus();
+    }
+
+    function handleSubmit(e){
+      const el = document.getElementById('q');
+      const v = (el.value || '').trim();
+      if(!v){ el.focus(); return false; }
+      // URLっぽい場合に https:// を補完（http/https無しでドメインだけ入れたとき用）
+      const looksLikeUrl = /^\w+:\/\//i.test(v) || (v.includes('.') && !v.includes(' '));
+      if(looksLikeUrl && !/^\w+:\/\//i.test(v)){
+        el.value = 'https://' + v;
+      }
+      return true;
+    }
+  </script>
 </body>
 </html>
